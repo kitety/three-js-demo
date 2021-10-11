@@ -16,39 +16,75 @@
 
     <script src="../js/OrbitControls.js"></script>
     <!--
-       几何体Geometry和缓冲类型几何体BufferGeometry表达的含义相同，只是对象的结构不同，Threejs渲染的时候会先把Geometry转化为BufferGeometry再解析几何体顶点数据进行渲染。
+       // 访问几何体顶点位置数据
+BufferGeometry.attributes.position
+// 访问几何体顶点颜色数据
+BufferGeometry.attributes.color
+// 访问几何体顶点法向量数据
+BufferGeometry.attributes.normal
 
-       Vector3是threejs的三维向量对象,可以通过Vector3对象表示一个顶点的xyz坐标，顶点的法线向量。
-
-       几何体Geometry的顶点位置属性geometry.vertices和缓冲类型几何体BufferGeometry顶点位置属性BufferGeometry.attributes.position是对应的。
-    -->
+// 设置几何体attributes属性的位置normal属性
+geometry.attributes.normal = new THREE.BufferAttribute(normals, 3); //3个为一组,表示一个顶点的法向量数据
+ -->
 
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
-      var geometry = new THREE.BufferGeometry(); //声明一个空几何
-      const vertices = []; //声明一个顶点数组
-      vertices.push(50, 0, 0); // 顶点1坐标
-      vertices.push(0, 70, 0); // 顶点2坐标
-      vertices.push(80, 70, 0); // 顶点3坐标
-      // //顶点坐标添加到geometry对象
+      // 创建一个buffer类型的集合体对象
+      var geometry = new THREE.BufferGeometry();
+      var vertices = new Float32Array([
+        0,
+        0,
+        0, //顶点1坐标
+        80,
+        0,
+        0, //顶点2坐标
+        80,
+        80,
+        0, //顶点3坐标
 
-      geometry.setAttribute(
-        "position",
-        new THREE.Float32BufferAttribute(vertices, 3)
-      );
+        0,
+        0,
+        0, //顶点4坐标   和顶点1位置相同
+        80,
+        80,
+        0, //顶点5坐标  和顶点3位置相同
+        0,
+        80,
+        0, //顶点6坐标
+      ]);
+      // //3个为一组，表示一个顶点的xyz坐标
+      var attribute = new THREE.BufferAttribute(vertices, 3);
+      // // 设置几何体attributes属性的位置属性
+      geometry.attributes.position = attribute;
+      // 顶点法向量
+      var normals = new Float32Array([
+        0,
+        0,
+        1, //顶点1法向量
+        0,
+        0,
+        1, //顶点2法向量
+        0,
+        0,
+        1, //顶点3法向量
 
-      // Color对象表示顶点颜色数据
-      var color1 = new THREE.Color(0x00ff00); //顶点1颜色——绿色
-      var color2 = new THREE.Color(0xff0000); //顶点2颜色——红色
-      var color3 = new THREE.Color(0x0000ff); //顶点3颜色——蓝色
-      //顶点颜色数据添加到geometry对象
-      // geometry.attributes.colors.push(color1, color2, color3);
+        0,
+        0,
+        1, //顶点4法向量
+        0,
+        0,
+        1, //顶点5法向量
+        0,
+        0,
+        1, //顶点6法向量
+      ]);
+      // 设置几何体attributes属性的位置normal属性
+      geometry.attributes.normal = new THREE.BufferAttribute(normals, 3); //3个为一组,表示一个顶点的xyz坐标
 
       // 自定义创建网格模型
       var material = new THREE.MeshBasicMaterial({
-        // color: 0xffff00,
-        color: THREE.VertexColors, //以顶点颜色为准
+        color: 0xff0000,
         side: THREE.DoubleSide,
       });
 
