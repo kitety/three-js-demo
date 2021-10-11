@@ -24,24 +24,15 @@
       var geometry1 = new THREE.BoxGeometry(100, 100, 100);
       var material1 = new THREE.MeshLambertMaterial({
         color: 0x0000ff,
-        opacity: 0.7,
-        // wireframe: true,
-        transparent: true,
       }); //材质对象Material
       var mesh1 = new THREE.Mesh(geometry1, material1); //网格模型对象Mesh
       scene.add(mesh1); //网格模型添加到场景中
 
       // 球体网格模型
-      /*
-      前面案例都是通过构造函数MeshLambertMaterial()实现漫反射进行渲染，高光效果要通过构造函数MeshPhongMaterial()模拟镜面反射实现，*/
       var geometry2 = new THREE.SphereGeometry(60, 40, 40);
-      var material2 = new THREE.MeshPhongMaterial({
-        color: 0x0000ff,
-        // 表示球体网格模型的高光颜色 改颜色的RGB值会与光照颜色的RGB分量相乘
-        specular: 0x4488ee,
-        // shininess属性可以理解为光照强度的系数
-        shininess: 12,
-      }); //材质对象
+      var material2 = new THREE.MeshLambertMaterial({
+        color: 0xff00ff,
+      });
       var mesh2 = new THREE.Mesh(geometry2, material2); //网格模型对象Mesh
       mesh2.translateY(120); //球体网格模型沿Y轴正方向平移120
       scene.add(mesh2);

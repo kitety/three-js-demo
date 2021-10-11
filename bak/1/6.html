@@ -15,6 +15,19 @@
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
+    <!--
+      AmbientLight	环境光
+      PointLight	点光源
+      DirectionalLight	平行光，比如太阳光
+      SpotLight	聚光源
+
+      你可以测试前面几节课案例中的光源代码，比如全部删除所有的光源代码，你会发现场景中的物体是黑色的，就像生活中一样没有光，物体是黑色的。
+
+      光源通过add方法插入场景中，不插入的话，渲染的时候不会获取光源的信息进行光照计算
+
+
+      你可以把点光源的位置设置为(0,0,0)，然后不使用其它任何光源，这时候你会发现场景中立方体渲染效果是黑色。其实原因很简单，立方体是有大小占，用一定空间的，如果光源位于立方体里面，而不是外部，自然无法照射到立方体外表面。
+     -->
 
     <script>
       //  创建场景对象
@@ -59,7 +72,14 @@
       /* 光源设置 点光源 */
       var point = new THREE.PointLight(0xffffff);
       point.position.set(400, 200, 300); //点光源位置
+      // point.position.set(0, 0, 0);
       scene.add(point);
+
+      // 点光源2  位置和point关于原点对称
+      var point2 = new THREE.PointLight(0xffffff);
+      point2.position.set(-400, -200, -300); //点光源位置
+      scene.add(point2); //点光源添加到场景中
+
       // 环境光
       var ambient = new THREE.AmbientLight(0x444444);
       scene.add(ambient);

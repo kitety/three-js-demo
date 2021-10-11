@@ -14,6 +14,8 @@
   <body>
     <script src="../js/three.js"></script>
 
+    <script src="../js/OrbitControls.js"></script>
+
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
@@ -60,9 +62,24 @@
       /* 创建场景 */
       document.body.appendChild(renderer.domElement);
       // 渲染场景
-      renderer.render(scene, camera);
+      // 渲染函数
+      // function render(e) {
+      //   console.log("e: ", e);
+      //   renderer.render(scene, camera); //执行渲染操作
+      // }
 
+      // render();
+      // var controls = new THREE.OrbitControls(camera, renderer.domElement); // 创建控件对象
+      // controls.addEventListener("change", render);
+      // 或者
 
+      function render(e) {
+        renderer.render(scene, camera); //执行渲染操作
+        requestAnimationFrame(render); //请求再次执行渲染函数render
+      }
+
+      render();
+      var controls = new THREE.OrbitControls(camera, renderer.domElement); // 创建控件对象
     </script>
   </body>
 </html>
