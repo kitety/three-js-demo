@@ -15,65 +15,50 @@
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
-    <!-- 查看下面一段代码，你可以看出来立方体网格模型Mesh是由立方体几何体geometry和材质material两部分构成，立方体几何体BoxGeometry本质上就是一系列的顶点构成，只是Threejs的APIBoxGeometry把顶点的生成细节封装了，用户可以直接使用。比如一个立方体网格模型，有6个面，每个面至少两个三角形拼成一个矩形平面，每个三角形三个顶点构成，对于球体网格模型而言，同样是通过三角形拼出来一个球面，三角形数量越多，网格模型表面越接近于球形。 -->
+    <!--
+       // 访问几何体顶点位置数据
+      BufferGeometry.attributes.position
+      // 访问几何体顶点颜色数据
+      BufferGeometry.attributes.color
+      // 访问几何体顶点法向量数据
+      BufferGeometry.attributes.normal
+
+      // 设置几何体attributes属性的位置normal属性
+      geometry.attributes.normal = new THREE.BufferAttribute(normals, 3); //3个为一组,表示一个顶点的法向量数据
+ -->
+
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
-      // 创建一个buffer类型的集合体对象
-      var geometry = new THREE.BufferGeometry();
-      var vertices = new Float32Array([
-        0,
-        0,
-        0, //顶点1坐标
-        50,
-        0,
-        0, //顶点2坐标
-        0,
-        100,
-        0, //顶点3坐标
-        0,
-        0,
-        10, //顶点4坐标
-        0,
-        0,
-        100, //顶点5坐标
-        50,
-        0,
-        10, //顶点6坐标
-      ]);
-      // //3个为一组，表示一个顶点的xyz坐标
-      var attribute = new THREE.BufferAttribute(vertices, 3);
-      // // 设置几何体attributes属性的位置属性
-      geometry.attributes.position = attribute;
+      var geometry = new THREE.Geometry(); //几何体对象
+      // Vector3定义顶点位置坐标数据
+      var p1 = new THREE.Vector3(50, 0, 0); // 顶点1坐标
+      var p2 = new THREE.Vector3(0, 70, 0); // 顶点2坐标
+      var p3 = new THREE.Vector3(80, 70, 0); // 顶点3坐标
+      // 顶点坐标添加到geometry对象
+      geometry.vertices.push(p1, p2, p3);
 
-      // // 自定义创建网格模型
-      var material = new THREE.MeshBasicMaterial({
-        // 三角面的颜色
-        color: 0x0000ff,
+      // Color定义顶点颜色数据
+      var color1 = new THREE.Color(0x00ff00); //顶点1颜色
+      var color2 = new THREE.Color(0xff0000); //顶点1颜色
+      var color3 = new THREE.Color(0x0000ff); //顶点1颜色
+      geometry.colors.push(color1, color2, color3);
+
+      var material = new THREE.LineBasicMaterial({
+        // vertexColors: THREE.VertexColors,
+        color: 0xff0000, //线条颜色
         side: THREE.DoubleSide,
       });
+
       var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
       scene.add(mesh);
-
       // 点渲染模式
-      var material = new THREE.PointsMaterial({
-        color: 0xff0000,
-        size: 10.0, //点对象像素尺寸
-      }); //材质对象
-      
-      var points = new THREE.Points(geometry, material); //点模型对象
-      scene.add(points); //点对象添加到场景中
-
-
-
-      // 线条渲染模式
-      var material = new THREE.LineBasicMaterial({
-        color: 0xff0000, //线条颜色
-      }); //材质对象
-      var line = new THREE.Line(geometry, material); //线条模型对象
-      scene.add(line); //线条对象添加到场景中
-
-
+      // var material = new THREE.PointsMaterial({
+      //   color: 0xff0000,
+      //   size: 10.0, //点对象像素尺寸
+      // }); //材质对象
+      // var points = new THREE.Points(geometry, material); //点模型对象
+      // scene.add(points); //点对象添加到场景中
 
       // 辅助坐标系  参数250表示坐标系大小，可以根据场景大小去设置
       var axisHelper = new THREE.AxisHelper(250);
@@ -106,7 +91,6 @@
         renderer.render(scene, camera); //执行渲染操作
         requestAnimationFrame(render); //请求再次执行渲染函数render
       }
-
       render();
     </script>
   </body>
