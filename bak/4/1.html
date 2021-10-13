@@ -16,37 +16,44 @@
 
     <script src="../js/OrbitControls.js"></script>
     <!--
-A.copy(B)表示B属性的值赋值给A对应属性。
 
-缩放几何体box,你可以发现上面代码中的两个网格模型的大小都发生了变化，因为网格模型克隆的时候，mesh对象的几何体对象mesh.geometry属性值是box对象的索引值，返回的新对象mesh2几何体属性mesh.geometry的值同样是box对象的索引值。
+点模型Points就是几何体的每一个顶点数据渲染为一个方形区域，方形区域的大小可以设置。
+两点确定一条直线，线模型Line就是使用线条去连接几何体的顶点数据。
+
+
+LineLoop和Line区别是连线的时候会闭合把第一个顶点和最后一个顶点连接起来，LineSegments则是顶点不共享，第1、2点确定一条线，第3、4顶点确定一条直线，第2和3点之间不连接。
+
+
+var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
+// 线条渲染模式
+var material=new THREE.LineBasicMaterial({
+    color:0xff0000 //线条颜色
+});//材质对象
+// 创建线模型对象   构造函数：Line、LineLoop、LineSegments
+var line=new THREE.Line(geometry,material);//线条模型对象
+
+
+三个顶点确定一个三角形，网格模型Mesh默认的情况下，通过三角形面绘制渲染几何体的所有顶点，通过一系列的三角形拼接出来一个曲面。
+
+如果设置网格模型的wireframe属性为true，所有三角形会以线条形式绘制出来。开发的时候可以通过设置wireframe属性来查看网格模型的三角形分布特点。
 
  -->
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
-      var p1 = new THREE.Vector3(1.2, 2.6, 3.3);
-      var p2 = new THREE.Vector3(0.0, 0.0, 0.0);
-      p2.copy(p1);
-      // p2向量的xyz变为p1的xyz值
-      console.log(p2);
-      var p1 = new THREE.Vector3(1.2, 2.6, 3.2);
-      var p2 = p1.clone();
-      // p2对象和p1对象xyz属性相同
-      console.log(p2);
-      var box = new THREE.BoxGeometry(10, 10, 10); //创建一个立方体几何对象
-      console.log("box: ", box);
-      var material = new THREE.MeshLambertMaterial({ color: 0x0000ff }); //材质对象
+      // 创建一个球体几何体
+      var geometry = new THREE.BoxGeometry(100, 100, 100);
+      // 三角形面渲染模式
+      var material = new THREE.MeshLambertMaterial({
+        color: 0x0000ff, //三角面颜色
+        wireframe: true, //网格模式
+      }); //材质对象
+      // 通过访问属性的形式设置
+      // material.wireframe = true;
+      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      scene.add(mesh);
 
-      var mesh = new THREE.Mesh(box, material); //网格模型对象
-      console.log("mesh: ", mesh);
-      var mesh2 = mesh.clone(); //克隆网格模型
-      console.log("mesh2: ", mesh2);
-      mesh.translateX(20); //网格模型mesh平移
-      // 这样缩放连个都会缩放 因为geometry索引值是一样的
-      box.scale(1.5, 1.5, 1.5); //几何体缩放
-
-      scene.add(mesh, mesh2); //网格模型添加到场景中
       /*****代码区域******/
 
       var axisHelper = new THREE.AxisHelper(250);
