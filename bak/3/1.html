@@ -15,42 +15,29 @@
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
-    <!--
 
-  var material = new THREE.MeshBasicMaterial({
-  color: 0xdd00ff,
-  // 前面FrontSide  背面：BackSide 双面：DoubleSide
-  side:THREE.DoubleSide,
-});
-材质透明度.opacity
-通过材质的透明度属性.opacity可以设置材质的透明程度，.opacity属性值的范围是0.0~1.0，0.0值表示完全透明, 1.0表示完全不透明，.opacity默认值1.0。
-
-当设置.opacity属性值的时候，需要设置材质属性transparent值为true，如果材质的transparent属性没设置为true, 材质会保持完全不透明状态。
-
-在构造函数参数中设置transparent和.opacity的属性值
-
- -->
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
       // 创建一个球体几何体
-      var geometry = new THREE.PlaneGeometry(100, 25); //创建一个球体几何对象
+      var geometry = new THREE.SphereGeometry(100, 25, 25); //创建一个球体几何对象
+      // 创建一个点材质对象
+      var material = new THREE.PointsMaterial({
+        color: 0x0000ff, //颜色
+        size: 3, //点渲染尺寸
+      });
+      //点模型对象  参数：几何体  点材质
+      // var point = new THREE.Points(geometry, material);
+      // scene.add(point); //网格模型添加到场景中
 
       var material = new THREE.MeshBasicMaterial({
-        color: 0x0000ff,
+        color: 0xdd00ff,
         // 前面FrontSide  背面：BackSide 双面：DoubleSide
         side: THREE.DoubleSide,
-        // transparent设置为true，开启透明，否则opacity不起作用
-        transparent: true,
-        opacity: 0.1,
       });
-      // transparent设置为true，开启透明，否则opacity不起作用
-      material.transparent = true;
-      // 设置材质透明度
-      material.opacity = 0.4;
-      var line = new THREE.Mesh(geometry, material);
-      // line.computeLineDistances();
+      var line = new THREE.Line(geometry, material);
+      line.computeLineDistances();
       scene.add(line);
 
       /*****代码区域******/
