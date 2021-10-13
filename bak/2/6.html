@@ -15,28 +15,55 @@
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
+    <!--
+
+
+ -->
 
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
-      /*****代码区域******/
-      // 创建一个几何立方体
-      var geometry = new THREE.BoxGeometry(100, 100, 100);
-      // xyz方向都放大两倍
-      geometry.scale(2, 2, 2);
-      // 沿着x轴平移50
-      geometry.translate(50, 0, 0);
-      // x轴旋转45度
-      geometry.rotateX((45 * Math.PI) / 180);
-      // 居中
-      geometry.center();
-      console.log("geometry: ", geometry.vertices);
+      var geometry = new THREE.Geometry();
+      var p1 = new THREE.Vector3(0, 0, 0); //顶点1
+      var p2 = new THREE.Vector3(0, 100, 1); //顶点2
+      var p3 = new THREE.Vector3(50, 0, 0); //顶点3
+      var p4 = new THREE.Vector3(0, 0, 100); //顶点4
+      geometry.vertices.push(p1, p2, p3, p4); //添加顶点数据
 
-      var material = new THREE.MeshBasicMaterial({
+      // geometry.vertices数组索引0, 1, 2对应的顶点位置坐标数据表示三角形1的三个顶点坐标，索引0, 2, 3对应的顶点位置坐标数据表示三角形2的三个顶点坐标。
+      // Face3构造函数创建一个三角面
+      var face1 = new THREE.Face3(0, 1, 2);
+      // 三角面每个面的法向量
+      var n1 = new THREE.Vector3(0, 0, -1); //三角面1Face1顶点1的法向量
+      var n2 = new THREE.Vector3(0, 0, -1); //三角面2Face2顶点2的法向量
+      var n3 = new THREE.Vector3(0, 0, -1); //三角面3Face3顶点3的法向量
+      // 设置三角面的Face3三个顶点的法向量  点的法向量
+      face1.vertexNormals.push(n1, n2, n3);
+      // 三角形1颜色
+      // 设置单一的颜色
+      face1.color = new THREE.Color(0x00ff00);
+
+      // 三角面2
+      var face2 = new THREE.Face3(0, 2, 3);
+      // 设置三角面法向量  面的法向量
+      face2.normal = new THREE.Vector3(0, -1, 0);
+      // 渐变设置颜色
+      // 注意设置材质的属性vertexColors属性值为THREE.VertexColors。
+      face2.vertexColors = [
+        new THREE.Color(0xffff00),
+        new THREE.Color(0xff00ff),
+        new THREE.Color(0x00ffff),
+      ];
+
+      // 添加到几何体
+      geometry.faces.push(face1, face2);
+
+      var material = new THREE.LineBasicMaterial({
         vertexColors: THREE.VertexColors,
-        side: THREE.DoubleSide, //两面可见
+        // color: 0xff0000, //线条颜色
+        side: THREE.DoubleSide,
       });
-      /*****代码区域******/
+
       var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
       scene.add(mesh);
 

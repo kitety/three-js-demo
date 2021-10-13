@@ -30,7 +30,8 @@
       geometry.rotateX((45 * Math.PI) / 180);
       // 居中
       geometry.center();
-      console.log("geometry: ", geometry.vertices);
+      // 几何体xyz方向分别缩放0.5,1.5,2倍
+      geometry.scale(0.5, 1.5, 2);
 
       var material = new THREE.MeshBasicMaterial({
         vertexColors: THREE.VertexColors,
@@ -38,6 +39,9 @@
       });
       /*****代码区域******/
       var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      // 网格模型xyz方向分别缩放0.5,1.5,2倍
+      // mesh.scale.set(0.5, 1.5, 2);
+      console.log("geometry: ", geometry.vertices);
       scene.add(mesh);
 
       var axisHelper = new THREE.AxisHelper(250);
