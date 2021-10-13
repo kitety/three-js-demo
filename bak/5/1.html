@@ -52,42 +52,23 @@ B2 = B1 * B0 * cosθ
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
+      // geometry的颜色设置为白色
+      var geometry = new THREE.BoxGeometry(100, 100, 100);
+      var material = new THREE.MeshLambertMaterial({ color: 0xffffff });
+      // var material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+      var mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
 
-      var box = new THREE.BoxGeometry(10, 10, 10); //创建一个立方体几何对象
-      console.log("box: ", box);
-      var material = new THREE.MeshLambertMaterial({ color: 0xffffff }); //材质对象
+      // 环境光 环境光颜色RGB成分分别和物体材质颜色RGB成分分别相乘
+      var ambient = new THREE.AmbientLight(0x440000);
+      scene.add(ambient);
 
-      var mesh = new THREE.Mesh(box, material); //网格模型对象
-
-      scene.add(mesh); //网格模型添加到场景中
-      //环境光:环境光颜色RGB成分分别和物体材质颜色RGB成分分别相乘
-      var ambient = new THREE.AmbientLight(0x888888);
-      // scene.add(ambient); //环境光对象添加到scene场景中
-
-      //点光源
-      var point = new THREE.PointLight(0xffffff);
-      //设置点光源位置，改变光源的位置
-      point.position.set(400, 200, 300);
-      // scene.add(point);
-
-      // 平型光
-      var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-      // 设置光源的方向 通过广元的position属性和目标指向的position属性计算
-      directionalLight.position.set(-80, 100, 50);
-      // 方向光指向对象的网格模型 可以不设置 默认0 0 0
-      directionalLight.target = mesh;
-      // scene.add(directionalLight);
-
-      // 聚光灯
-      var spotLight = new THREE.SpotLight(0xffffff);
-      // 设置聚光灯的位置属性.position
-      spotLight.position.set(200, 200, 100);
-      // 设置聚光灯的方向属性.target
-      spotLight.target = mesh;
-      // 设置聚光灯的发散角度
-      spotLight.angle = Math.PI / 180;
-      // 添加聚光灯
-      scene.add(spotLight);
+      // 点光源
+      var pointLight = new THREE.PointLight(0xff0000);
+      //设置点光源位置  光源对象和模型对象的position属性一样是Vector3对象
+      //PointLight的基类是Light  Light的基类是Object3D  点光源对象继承Object3D对象的位置属性position
+      pointLight.position.set(400, 200, 300);
+      scene.add(pointLight);
 
       /*****代码区域******/
 
