@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>My first three.js app</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        /* 隐藏body窗口区域滚动条 */
+      }
+    </style>
+  </head>
+  <body>
+    <script src="../js/three.js"></script>
+
+    <script src="../js/OrbitControls.js"></script>
+    <!--
+访问模型的位置属性.position获得模型在本地坐标系或者说模型坐标系下的三维坐标，通过模型的.getWorldPosition()方法获得该模型在世界坐标下的三维坐标。
+    -->
+    <script>
+      //  创建场景对象
+      var scene = new THREE.Scene();
+      /*****代码区域******/
+      // 球体网格模型创建函数
+      function sphereMesh(R, x, y, z) {
+        var geometry = new THREE.SphereGeometry(R, 25, 25); //球体几何体
+        var material = new THREE.MeshPhongMaterial({
+          color: 0x0000ff,
+        }); //材质对象Material
+        var mesh = new THREE.Mesh(geometry, material); // 创建网格模型对象
+        mesh.position.set(x, y, z);
+        return mesh;
+      }
+      // 圆柱体网格模型创建函数
+      function cylinderMesh(R, h, x, y, z) {
+        var geometry = new THREE.CylinderGeometry(R, R, h, 25, 25); //球体几何体
+        var material = new THREE.MeshPhongMaterial({
+          color: 0x0000ff,
+        }); //材质对象Material
+        var mesh = new THREE.Mesh(geometry, material); // 创建网格模型对象
+        mesh.position.set(x, y, z);
+        return mesh;
+      }
+      // 头部网络模型和组
+      var headMesh = sphereMesh(10, 0, 0, 0);
+      headMesh.name = "脑袋";
+      var leftEyeMesh = sphereMesh(1, 8, 5, 4);
+      leftEyeMesh.name = "左眼";
+      var rightEyeMesh = sphereMesh(1, 8, 5, -4);
+      rightEyeMesh.name = "右眼";
+      var headGroup = new THREE.Group();
+      headGroup.name = "头部";
+      headGroup.add(headMesh);
+      headGroup.add(leftEyeMesh);
+      headGroup.add(rightEyeMesh);
+      var worldPosition = new THREE.Vector3();
+      // 执行getWorldPosition方法把模型的世界坐标保存到参数worldPosition中
+      headMesh.getWorldPosition(worldPosition);
+      console.log("worldPosition: ", worldPosition);
+
+      var neckMesh = cylinderMesh(3, 10, 0, -15, 0);
+      neckMesh.name = "脖子";
+      var bodyMesh = cylinderMesh(14, 30, 0, -35, 0);
+      bodyMesh.name = "身体";
+      var leftLegMesh = cylinderMesh(4, 60, 0, -80, -7);
+      leftLegMesh.name = "左腿";
+      var rightLegMesh = cylinderMesh(4, 60, 0, -80, 7);
+      rightLegMesh.name = "右腿";
+      var legGroup = new THREE.Group();
+      legGroup.name = "腿部";
+      legGroup.add(leftLegMesh);
+      legGroup.add(rightLegMesh);
+
+      var bodyGroup = new THREE.Group();
+      bodyGroup.name = "身体";
+      bodyGroup.add(neckMesh);
+      bodyGroup.add(bodyMesh);
+      bodyGroup.add(legGroup);
+
+      // 人
+      var personGroup = new THREE.Group();
+      personGroup.name = "人";
+      personGroup.add(headGroup);
+      personGroup.add(bodyGroup);
+      personGroup.translateY(100);
+      scene.add(personGroup);
+
+      // 遍历方法
+      scene.traverse(function (obj) {
+        // console.log("obj: ", obj);
+        if (obj.type === "Group") {
+          // console.log(obj.name);
+        }
+        if (obj.type === "Mesh") {
+          // console.log("  " + obj.name);
+          obj.material.color.set(0xffff00);
+        }
+        if ((obj.name === "左眼") | (obj.name === "右眼")) {
+          obj.material.color.set(0x000000);
+        }
+        // 打印id属性
+        // console.log(obj.id);
+        // 打印该对象的父对象
+        // console.log(obj.parent);
+        // 打印该对象的子对象
+        // console.log(obj.children);
+      });
+      // 遍历查找scene中复合条件的子对象，并返回id对应的对象
+      var idNode = scene.getObjectById(4);
+      console.log(idNode);
+      /*****代码区域******/
+
+      var axisHelper = new THREE.AxisHelper(250);
+      scene.add(axisHelper);
+
+      /* 相机设置 */
+      var width = window.innerWidth; // 窗口宽度
+      var height = window.innerHeight; // 窗口高度
+      var k = width / height; // 窗口宽高比
+      var s = 200; //三维场景显示范围控制系数，系数越大，显示的范围越大
+      // 创建相机对象
+      // 正交投影
+      // 相机构造函数的的前四个参数定义的是拍照窗口大小
+      var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+      camera.position.set(200, 300, 200); // 相机位置
+      camera.lookAt(scene.position); // 设置相机方向(指向的场景对象)
+
+      /* 创建渲染器对象 */
+      var renderer = new THREE.WebGLRenderer();
+      // 开启阴影
+      renderer.shadowMapEnabled = true;
+      renderer.setSize(width, height); // 设置渲染区域尺寸
+      renderer.setClearColor(0xb9d3ff, 1); // 设置背景颜色
+
+      /* 创建场景 */
+      document.body.appendChild(renderer.domElement);
+      // 渲染场景
+
+      var controls = new THREE.OrbitControls(camera, renderer.domElement); // 创建控件对象
+
+      function render(e) {
+        renderer.render(scene, camera); //执行渲染操作
+        requestAnimationFrame(render); //请求再次执行渲染函数render
+      }
+      render();
+    </script>
+  </body>
+</html>

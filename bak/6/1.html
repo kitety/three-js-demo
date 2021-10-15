@@ -16,42 +16,38 @@
 
     <script src="../js/OrbitControls.js"></script>
     <!--
-访问模型的位置属性.position获得模型在本地坐标系或者说模型坐标系下的三维坐标，通过模型的.getWorldPosition()方法获得该模型在世界坐标下的三维坐标。
-建立坐标系的概念
+
     -->
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
-      var geometry = new THREE.BoxGeometry(100, 100, 100);
-      // 材质对象
-      var material = new THREE.MeshLambertMaterial({
-        color: 0x00ff00,
-      });
-
-      // 网格模型对象Mesh
-      var mesh = new THREE.Mesh(geometry, material);
-      // scene.add(mesh);
-      // mesh本地的坐标设置为50 0 0
-      mesh.position.set(50, 0, 0);
+      var geometry = new THREE.BoxGeometry(20, 20, 20);
+      var material1 = new THREE.MeshBasicMaterial({ color: 0x0000ff });
       var group = new THREE.Group();
-      // group的坐标一样设置为50 0 0
-      // mesh父坐标的设置会影响到mesh的世界坐标
-      group.position.set(50, 0, 0);
-      group.add(mesh);
+      var mesh1 = new THREE.Mesh(geometry, material1);
+      var mesh2 = new THREE.Mesh(geometry, material1);
+      mesh2.position.x = 30;
+      //把mesh1型插入到组group中，mesh1作为group的子对象
+      group.add(mesh1);
+      //把mesh2型插入到组group中，mesh2作为group的子对象
+      group.add(mesh2);
+      //把group插入到场景中作为场景子对象
       scene.add(group);
-      // .position获得本地的坐标
+      //沿着Y轴平移mesh1和mesh2的父对象，mesh1和mesh2跟着平移
+      group.translateY(100);
+      //父对象缩放，子对象跟着缩放
+      group.scale.set(4, 4, 4);
+      //父对象旋转，子对象跟着旋转
+      group.rotateY(Math.PI / 6);
 
-      console.log("本地坐标", mesh.position);
-      // getWorldPosition获得世界坐标
-      // 该语句默认在threejs渲染的过程中执行,如果渲染之前想获得世界矩阵属性、世界位置属性等属性，需要通过代码更新
-      scene.updateMatrixWorld(true);
-      var worldPosition = new THREE.Vector3();
-      mesh.getWorldPosition(worldPosition);
-      console.log("世界坐标", worldPosition);
+      console.log("查看group的子对象", group.children);
+      console.log("查看Scene的子对象", scene.children);
 
-      // 本地坐标和世界坐标
-
+      // 删除父对象group的子对象网格模型mesh1
+      // group.add(mesh1)
+      // 一次删除场景中多个对象
+      // scene.remove(light,group)
       /*****代码区域******/
 
       var axisHelper = new THREE.AxisHelper(250);
