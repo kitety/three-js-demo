@@ -18,19 +18,6 @@
     <!--
     Three.js物体投影模拟计算主要设置三部分，一个是设置产生投影的模型对象，一个是设置接收投影效果的模型，最后一个是光源对象本身的设置，光源如何产生投影。
 
-    .castShadow属性值是布尔值，默认false，用来设置一个模型对象是否在光照下产生投影效果。具体查看threejs文档Object3D
-
-    // 设置产生投影的网格模型
-    mesh.castShadow = true;
-
-    平行光DirectionalLight的.shadow属性值是平行光阴影对象DirectionalLightShadow，聚光源SpotLight的.shadow属性值是聚光源阴影对象SpotLightShadow。关于DirectionalLightShadow和SpotLightShadow两个类的具体介绍可以参考Three.js文档Lights / Shadows分类，
-
-
-    LightShadow属性.mapSize
-定义阴影纹理贴图宽高尺寸的一个二维向量Vector2.
-
-较高的值会以计算时间为代价提供更好的阴影质量. 宽高分量值必须是2的幂, 直到给定设备的WebGLRenderer.capabilities.maxTextureSize, 尽管宽度和高度不必相同 (例如，(512, 1024)是有效的). 默认值为 ( 512, 512 ).
-
     -->
     <script>
       //  创建场景对象
@@ -62,7 +49,7 @@
       var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
       // 设置光源的位置
       directionalLight.position.set(60, 100, 40);
-      // scene.add(directionalLight);
+      scene.add(directionalLight);
       // 设置用于计算阴影的光源的对象
       directionalLight.castShadow = true;
       // 设置计算阴影的区域 最好刚好密集包含在对象的周围
@@ -75,24 +62,8 @@
       directionalLight.shadow.camera.bottom = -100;
       // 设置mapsize属性可以让阴影更加清晰 不那么模糊
       // directionalLight.shadow.mapSize.set(1024, 1024);
-      console.log(directionalLight.shadow.camera);
 
-      // 下面是聚光灯的代码
-      // 聚光光源
-      var spotLight = new THREE.SpotLight(0xffffff);
-      // 设置聚光光源的位置
-      spotLight.position.set(50, 90, 50);
-      // 设置聚光光源的发散度
-      spotLight.angle = Math.PI / 6;
-      // 添加到场景中
-      scene.add(spotLight);
-      // 设置用于计算阴影的光源对象
-      spotLight.castShadow = true;
-      // 设置阴影的区域 注意包裹对象的周围
-      spotLight.shadow.camera.near = 1;
-      spotLight.shadow.camera.far = 300;
-      spotLight.shadow.camera.fov = 20;
-      // spotLight.shadow.mapSize.set(2^10000, 2^10000);
+      console.log(directionalLight.shadow.camera);
 
       /*****代码区域******/
 
