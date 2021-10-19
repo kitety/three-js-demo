@@ -23,21 +23,33 @@
       var scene = new THREE.Scene();
       /*****代码区域******/
 
-      var video = document.createElement("video");
-      video.src =
-        "https://qhstaticva-cos.kujiale.com/media/yun/help/college/1634619068553_6-%E6%96%BD%E5%B7%A5%E5%9B%BE3.0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9B%BE%E6%A1%86%E9%85%8D%E7%BD%AE%E8%AE%B2%E8%A7%A3.mp4";
-      video.autoplay = "autoplay";
+      var canvas = document.createElement("canvas");
+      canvas.width = 512;
+      canvas.height = 128;
+      var c = canvas.getContext("2d");
+      var Image = new Image();
+      Image.src = "../assets/1.png";
+      Image.onload = function () {
+        // var bg = ctx.createPattern(Image, "no-repeat");
+        c.drawImage(Image, 0, 0);
+        // 注意图片加载完成执行canvas相关方法后，要更新一下纹理
+        // document.body.appendChild(canvas);
 
-      var texture = new THREE.VideoTexture(video);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.format = THREE.RGBFormat;
-      var geometry = new THREE.PlaneGeometry(108, 71); //矩形平面
-      var material = new THREE.Mesh({
-        map: texture,
-      });
-      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-      scene.add(mesh); //网格模型添加到场景中
+        // canvas画布对象作为CanvasTexture的参数重建一个纹理对象
+        // canvas画布可以理解为一张图片
+        var texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        //打印纹理对象的image属性
+        // console.log(texture.image);
+        //矩形平面
+        var geometry = new THREE.PlaneGeometry(128, 32);
+        var material = new THREE.MeshBasicMaterial({
+          map: texture,
+        });
+        var plane = new THREE.Mesh(geometry, material);
+        scene.add(plane);
+      };
+
       /*****代码区域******/
 
       var axisHelper = new THREE.AxisHelper(250);

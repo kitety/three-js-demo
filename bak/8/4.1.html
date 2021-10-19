@@ -16,26 +16,48 @@
 
     <script src="../js/OrbitControls.js"></script>
     <!--
+   var textureLoader = new THREE.TextureLoader(); // 纹理加载器
 
+      var texture = textureLoader.load("../assets/1.png"); // 加
+      // 设置阵列模式 默认ClampToEdgeWrapping RepeatWrapping 阵列
+      // 镜像阵列 MirroredRepeatWrapping
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      // uv两个方向纹理重复数量
+      texture.repeat.set(4, 2);
+
+      var textureLoader = new THREE.TextureLoader();
+      var texture = textureLoader.load("太阳能板2.png"); // 加载纹理贴图
+      // 不设置重复  偏移范围-1~1
+      texture.offset = new THREE.Vector2(0.3, 0.1);
     -->
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
+      var geometry = new THREE.PlaneGeometry(204, 102, 4, 4); // 矩形平面
 
-      var video = document.createElement("video");
-      video.src =
-        "https://qhstaticva-cos.kujiale.com/media/yun/help/college/1634619068553_6-%E6%96%BD%E5%B7%A5%E5%9B%BE3.0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9B%BE%E6%A1%86%E9%85%8D%E7%BD%AE%E8%AE%B2%E8%A7%A3.mp4";
-      video.autoplay = "autoplay";
+      var textureLoader = new THREE.TextureLoader(); // 纹理加载器
 
-      var texture = new THREE.VideoTexture(video);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.format = THREE.RGBFormat;
-      var geometry = new THREE.PlaneGeometry(108, 71); //矩形平面
-      var material = new THREE.Mesh({
+      var texture = textureLoader.load("../assets/1.png"); // 加
+      // 设置阵列模式 默认ClampToEdgeWrapping RepeatWrapping 阵列
+      // 镜像阵列 MirroredRepeatWrapping
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      // uv两个方向纹理重复数量
+      texture.repeat.set(2, 2);
+
+      texture.offset = new THREE.Vector2(0.5, 0.5);
+      // 纹理旋转
+      texture.rotation = Math.PI / 2; // 设置旋转角度
+      // 设置旋转中心
+      texture.center.set(0.5, 0.5);
+      console.log("texture: ", texture.matrix);
+      var material = new THREE.MeshBasicMaterial({
+        // color: 0xffff3f,
         map: texture,
       });
+      // 设置数组材质对象作为网格模型材质参数
       var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
       scene.add(mesh); //网格模型添加到场景中
       /*****代码区域******/
@@ -71,6 +93,8 @@
       function render(e) {
         renderer.render(scene, camera); //执行渲染操作
         requestAnimationFrame(render); //请求再次执行渲染函数render
+        texture.offset.x -= 0.01;
+
       }
       render();
     </script>

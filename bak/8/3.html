@@ -22,21 +22,36 @@
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
-
-      var video = document.createElement("video");
-      video.src =
-        "https://qhstaticva-cos.kujiale.com/media/yun/help/college/1634619068553_6-%E6%96%BD%E5%B7%A5%E5%9B%BE3.0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9B%BE%E6%A1%86%E9%85%8D%E7%BD%AE%E8%AE%B2%E8%A7%A3.mp4";
-      video.autoplay = "autoplay";
-
-      var texture = new THREE.VideoTexture(video);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.format = THREE.RGBFormat;
-      var geometry = new THREE.PlaneGeometry(108, 71); //矩形平面
-      var material = new THREE.Mesh({
-        map: texture,
+      var geometry = new THREE.BoxGeometry(100, 100, 100); //立方体
+      console.log(geometry.faces);
+      geometry.faces.forEach((elem) => {
+        // 可以看到索引值
+        console.log(elem.materialIndex);
       });
-      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      // var geometry = new THREE.SphereGeometry(60, 25, 25);
+      // 材质对象1
+      var material_1 = new THREE.MeshPhongMaterial({
+        color: 0xffff3f,
+      });
+      var textureLoader = new THREE.TextureLoader(); // 纹理加载器
+      var texture = textureLoader.load("../assets/1.png"); // 加载图片，返回Texture对象
+      // 材质对象2
+      var material_2 = new THREE.MeshBasicMaterial({
+        map: texture, // 设置纹理贴图
+        // wireframe:true,
+      });
+      // 设置材质数组
+      var materialArr = [
+        material_2,
+        material_1,
+        material_1,
+        material_1,
+        material_1,
+        material_1,
+      ];
+
+      // 设置数组材质对象作为网格模型材质参数
+      var mesh = new THREE.Mesh(geometry, materialArr); //网格模型对象Mesh
       scene.add(mesh); //网格模型添加到场景中
       /*****代码区域******/
 

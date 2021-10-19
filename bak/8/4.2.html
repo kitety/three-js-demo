@@ -16,28 +16,50 @@
 
     <script src="../js/OrbitControls.js"></script>
     <!--
+   var textureLoader = new THREE.TextureLoader(); // 纹理加载器
 
+      var texture = textureLoader.load("../assets/1.png"); // 加
+      // 设置阵列模式 默认ClampToEdgeWrapping RepeatWrapping 阵列
+      // 镜像阵列 MirroredRepeatWrapping
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      // uv两个方向纹理重复数量
+      texture.repeat.set(4, 2);
+
+      var textureLoader = new THREE.TextureLoader();
+      var texture = textureLoader.load("太阳能板2.png"); // 加载纹理贴图
+      // 不设置重复  偏移范围-1~1
+      texture.offset = new THREE.Vector2(0.3, 0.1);
     -->
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
+      //  创建一个设置重复纹理的管道
+      var curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-80, -40, 0),
+        new THREE.Vector3(-70, 40, 0),
+        new THREE.Vector3(70, 40, 0),
+        new THREE.Vector3(80, -40, 0),
+      ]);
+      var tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.6, 50, false);
+      var textureLoader = new THREE.TextureLoader();
+      var texture = textureLoader.load("../assets/1.png"); // 加载纹理贴图
+      // 设置阵列模式为 RepeatWrapping
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
 
-      var video = document.createElement("video");
-      video.src =
-        "https://qhstaticva-cos.kujiale.com/media/yun/help/college/1634619068553_6-%E6%96%BD%E5%B7%A5%E5%9B%BE3.0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9B%BE%E6%A1%86%E9%85%8D%E7%BD%AE%E8%AE%B2%E8%A7%A3.mp4";
-      video.autoplay = "autoplay";
-
-      var texture = new THREE.VideoTexture(video);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.format = THREE.RGBFormat;
-      var geometry = new THREE.PlaneGeometry(108, 71); //矩形平面
-      var material = new THREE.Mesh({
+      // 设置x方向的偏移(沿着管道路径方向)，y方向默认1
+      //等价texture.repeat= new THREE.Vector2(20,1)
+      texture.repeat.x = 20;
+      var tubeMaterial = new THREE.MeshPhongMaterial({
         map: texture,
+        transparent: true,
       });
-      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-      scene.add(mesh); //网格模型添加到场景中
+
+      var mesh = new THREE.Mesh(tubeGeometry, tubeMaterial);
+      scene.add(mesh);
+
       /*****代码区域******/
 
       var axisHelper = new THREE.AxisHelper(250);
@@ -71,6 +93,7 @@
       function render(e) {
         renderer.render(scene, camera); //执行渲染操作
         requestAnimationFrame(render); //请求再次执行渲染函数render
+        texture.offset.x -= 0.06;
       }
       render();
     </script>
