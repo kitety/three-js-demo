@@ -25,16 +25,19 @@
 
       var video = document.createElement("video");
       video.src =
-        "https://qhstaticva-cos.kujiale.com/media/yun/help/college/1634619068553_6-%E6%96%BD%E5%B7%A5%E5%9B%BE3.0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9B%BE%E6%A1%86%E9%85%8D%E7%BD%AE%E8%AE%B2%E8%A7%A3.mp4";
+        "../assets/sintel.mp4";
       video.autoplay = "autoplay";
 
       var texture = new THREE.VideoTexture(video);
+      console.log("texture: ", texture.update);
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.format = THREE.RGBFormat;
-      var geometry = new THREE.PlaneGeometry(108, 71); //矩形平面
-      var material = new THREE.Mesh({
+
+      var geometry = new THREE.PlaneGeometry(100, 100, 4,4); //矩形平面
+      var material = new THREE.MeshBasicMaterial({
         map: texture,
+        side: THREE.DoubleSide,
       });
       var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
       scene.add(mesh); //网格模型添加到场景中
@@ -69,6 +72,7 @@
       var controls = new THREE.OrbitControls(camera, renderer.domElement); // 创建控件对象
 
       function render(e) {
+        texture.update()
         renderer.render(scene, camera); //执行渲染操作
         requestAnimationFrame(render); //请求再次执行渲染函数render
       }
