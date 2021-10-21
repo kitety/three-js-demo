@@ -16,35 +16,33 @@
 
     <script src="../js/OrbitControls.js"></script>
     <!--
+一般几何体有两套UV坐标，对于Geometry类型几何体而言
 
+Geometry.faceVertexUvs[0]包含的纹理坐标用于颜色贴图map、法线贴图normalMap等,Geometry.faceVertexUvs[1]包含的第二套纹理贴图用于光照阴影贴图
+
+一般通过Threejs几何体API创建的几何体默认只有一组纹理坐标Geometry.faceVertexUvs[0]，所以为了设置光照阴影贴图，需要给另一组纹理坐标赋值Geometry.faceVertexUvs[1] = Geometry.faceVertexUvs[0];
+
+BufferGeometry属性.uv和.uv2
+一般通过Threejs加载外部模型，解析三维模型数据得到的几何体类型是缓冲类型几何体BufferGeometry，对于BufferGeometry而言两套纹理坐标分别通过.uv和.uv2属性表示。
+
+geometry.attributes.uv2 = geometry.attributes.uv;
     -->
     <script>
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
 
-      var geometry = new THREE.BoxGeometry(100, 100, 100);
-
-      var loader = new THREE.CubeTextureLoader();
-      // 所有的贴图都在同一个目录下
-      loader.setPath("../assets/env/");
-      // 立方体文集加载器立即返回纹理对象CubeTexture
-      // 立方体纹理加载器返回立方体纹理对象CubeTexture
-      var cubeTexture = loader.load(
-        ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"],
-        (cubeTexture) => {
-          console.log("cubeTexture: ", cubeTexture);
-          console.log(cubeTexture.image);
-
-          // 材质对象
-          var material = new THREE.MeshPhongMaterial({
-            envMap: cubeTexture,
-            reflectivity: 0.1,
-          });
-          var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-          scene.add(mesh); //网格模型添加到场景中
-        }
-      );
+      // 创建一个平面几何体座位投影面
+      var planeGeometry = new THREE.PlaneGeometry(300, 200);
+      planeGeometry.faceVertexUvs[1] = planeGeometry.faceVertexUvs[0];
+      var textureLoader = new THREE.TextureLoader();
+      var texture = textureLoader.load("../assets/shadow.png");
+      var planeMaterial = new THREE.MeshBasicMaterial({
+        color: 0x999999,
+        lightMap: texture,
+      });
+      var planMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+      scene.add(planMesh);
 
       /*****代码区域******/
 

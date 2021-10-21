@@ -23,29 +23,24 @@
       var scene = new THREE.Scene();
       /*****代码区域******/
 
-      var geometry = new THREE.BoxGeometry(100, 100, 100);
+      var video = document.createElement("video");
+      video.src =
+        "../assets/sintel.mp4";
+      video.autoplay = "autoplay";
 
-      var loader = new THREE.CubeTextureLoader();
-      // 所有的贴图都在同一个目录下
-      loader.setPath("../assets/env/");
-      // 立方体文集加载器立即返回纹理对象CubeTexture
-      // 立方体纹理加载器返回立方体纹理对象CubeTexture
-      var cubeTexture = loader.load(
-        ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"],
-        (cubeTexture) => {
-          console.log("cubeTexture: ", cubeTexture);
-          console.log(cubeTexture.image);
+      var texture = new THREE.VideoTexture(video);
+      console.log("texture: ", texture.update);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.format = THREE.RGBFormat;
 
-          // 材质对象
-          var material = new THREE.MeshPhongMaterial({
-            envMap: cubeTexture,
-            reflectivity: 0.1,
-          });
-          var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-          scene.add(mesh); //网格模型添加到场景中
-        }
-      );
-
+      var geometry = new THREE.PlaneGeometry(100, 100, 4,4); //矩形平面
+      var material = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.DoubleSide,
+      });
+      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      scene.add(mesh); //网格模型添加到场景中
       /*****代码区域******/
 
       var axisHelper = new THREE.AxisHelper(250);
@@ -77,6 +72,7 @@
       var controls = new THREE.OrbitControls(camera, renderer.domElement); // 创建控件对象
 
       function render(e) {
+        texture.update()
         renderer.render(scene, camera); //执行渲染操作
         requestAnimationFrame(render); //请求再次执行渲染函数render
       }

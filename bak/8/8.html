@@ -22,29 +22,19 @@
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
-
-      var geometry = new THREE.BoxGeometry(100, 100, 100);
-
-      var loader = new THREE.CubeTextureLoader();
-      // 所有的贴图都在同一个目录下
-      loader.setPath("../assets/env/");
-      // 立方体文集加载器立即返回纹理对象CubeTexture
-      // 立方体纹理加载器返回立方体纹理对象CubeTexture
-      var cubeTexture = loader.load(
-        ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"],
-        (cubeTexture) => {
-          console.log("cubeTexture: ", cubeTexture);
-          console.log(cubeTexture.image);
-
-          // 材质对象
-          var material = new THREE.MeshPhongMaterial({
-            envMap: cubeTexture,
-            reflectivity: 0.1,
-          });
-          var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-          scene.add(mesh); //网格模型添加到场景中
-        }
-      );
+      var geometry = new THREE.SphereGeometry(100, 35, 35); //球体
+      var textureLoader = new THREE.TextureLoader();
+      var texture = textureLoader.load("../assets/earth_diffuse.png");
+      // 加载高光贴图
+      var textureSpecular = textureLoader.load("../assets/earth_specular.png");
+      var material = new THREE.MeshPhongMaterial({
+        // specular: 0xff0000,//高光部分的颜色
+        shininess: 30, //高光部分的亮度，默认30
+        map: texture, // 普通纹理贴图
+        specularMap: textureSpecular, //高光贴图
+      }); //材质对象Material
+      var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      scene.add(mesh); //网格模型添加到场景中
 
       /*****代码区域******/
 
