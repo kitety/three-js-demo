@@ -15,43 +15,10 @@
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
-    <button
-      onclick="pos()"
-      type="button"
-      style="position: absolute; padding: 10px"
-    >
-      时间递增
-    </button>
-    <div id="app">
-      <div class="block" style="display: inline; width: 500px">
-        <el-slider v-model="time" show-input :max="20" :step="0.01"></el-slider>
-      </div>
-    </div>
-    <button
-      onclick="pause()"
-      type="button"
-      style="position: absolute; padding: 10px; left: 120px"
-    >
-      暂停/继续
-    </button>
+    <!--
+
+    -->
     <script>
-      // 时间点设置函数
-      function pos() {
-        // 开始结束时间设置为一样，相当于播放时间为0，直接跳转到时间点对应的状态
-        AnimationAction.time += 2; //操作对象设置开始播放时间
-        clip.duration = AnimationAction.time; //剪辑对象设置播放结束时间
-        AnimationAction.play(); //开始播放
-      }
-      // 暂停继续播放函数
-      function pause() {
-        if (AnimationAction.paused) {
-          // 如果是播放状态，设置为暂停状态
-          AnimationAction.paused = false;
-        } else {
-          // 如果是暂停状态，设置为播放状态
-          AnimationAction.paused = true;
-        }
-      }
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
@@ -110,12 +77,6 @@
       // 通过action 设置播放方式
       AnimationAction.timeScale = 4; //设置动画播放速度
       // AnimationAction.loop = THREE.LoopOnce; //不循环播放
-      // imationAction.loop = THREE.LoopOnce; //不循环播放
-      AnimationAction.clampWhenFinished = true; //暂停在最后一帧播放的状态
-      // AnimationAction.time = 10; //操作对象设置开始播放时间
-      clip.duration = 15; //剪辑对象设置播放结束时间
-      // 开始结束时间设置为一样，相当于播放时间为0，直接跳转到时间点对应的状态
-
       AnimationAction.play(); //开始播放
 
       // 播放关键帧动画的时候，注意在渲染函数render()中执行mixer.update(渲染间隔时间)告诉帧动画系统Threejs两次渲染的时间间隔，获得时间间隔可以通过Threejs提供的一个时钟类Clock实现。
