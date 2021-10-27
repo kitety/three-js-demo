@@ -12,20 +12,6 @@
     </style>
   </head>
   <body>
-    <div id="app">
-      <div class="block" style="display: inline; width: 500px">
-        <el-slider v-model="time" show-input :max="1" :step="0.01"></el-slider>
-      </div>
-    </div>
-    <!-- vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-    <!-- 引入样式 -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-    />
-    <!-- 引入组件库 -->
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
@@ -36,37 +22,29 @@
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
+      var loader = new THREE.ObjectLoader(); //创建一个加载器
+      var mixer = null; //声明一个混合器变量
+      var SkinnedMesh = null; //声明一个骨骼网格模型变量
+      // 创建一个时钟对象Clock
+      var clock = new THREE.Clock();
+      loader.load("./data.json", function (obj) {
+        // console.log(obj)
+        scene.add(obj); //添加到场景中
+        //从返回对象获得骨骼网格模型
+        // SkinnedMesh = obj.children[0];
+        // 查看骨头关节Bone
+        // console.log(SkinnedMesh.skeleton.bones);
 
-      var loader = new THREE.JSONLoader();
-      loader.load("./people.json", function (geometry, materials) {
-        console.log("geometry, materials: ", geometry, materials);
-        // 通过平均面法线来计算顶点法线，效果更光滑
-        geometry.computeVertexNormals();
-        // var material = new THREE.MeshFaceMaterial(materials);
-        var mesh = new THREE.Mesh(geometry, materials[0]);
-        // 材质对象开启渲染目标
-        mesh.material.morphTargets = true;
-        mesh.rotateX(-Math.PI / 2);
-        // mesh.position.y = -50;
-        scene.add(mesh);
-        console.log("mesh: ", mesh);
-        // 查看变形目标数据
-        console.log(geometry.morphTargets);
-        // mesh.morphTargetInfluences[0] = 1;
-        // mesh.morphTargetInfluences[4] = 1;
-        //实例化vue
-        vm = new Vue({
-          el: "#app",
-          data: {
-            time: 0,
-          },
-          watch: {
-            time: function (value) {
-              mesh.morphTargetInfluences[0] = value; // 变胖
-              // mesh.morphTargetInfluences[4] = value; // 变瘦
-            },
-          },
-        });
+        // 骨骼辅助显示
+        // var skeletonHelper = new THREE.SkeletonHelper(SkinnedMesh);
+        // scene.add(skeletonHelper);
+
+        // 遍历骨骼模型中的骨关节Bone，并获得世界坐标
+        // SkinnedMesh.traverse(function(elem) {
+        //   if (elem.type === 'Bone') {
+        //     console.log(elem.getWorldPosition(new THREE.Vector3()));
+        //   }
+        // });
       });
       /*****代码区域******/
 
@@ -103,8 +81,11 @@
         requestAnimationFrame(render); //请求再次执行渲染函数render
         //clock.getDelta()方法获得两帧的时间间隔
         // 更新混合器相关的时间
-        //clock.getDelta()方法获得两帧的时间间隔
-        // 更新混合器相关的时间
+        if (mixer !== null) {
+          //clock.getDelta()方法获得两帧的时间间隔
+          // 更新混合器相关的时间
+          mixer.update(clock.getDelta());
+        }
       }
       render();
       // onresize 事件会在窗口被调整大小时发生

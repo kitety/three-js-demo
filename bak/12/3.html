@@ -12,20 +12,6 @@
     </style>
   </head>
   <body>
-    <div id="app">
-      <div class="block" style="display: inline; width: 500px">
-        <el-slider v-model="time" show-input :max="1" :step="0.01"></el-slider>
-      </div>
-    </div>
-    <!-- vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-    <!-- 引入样式 -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-    />
-    <!-- 引入组件库 -->
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
@@ -37,37 +23,58 @@
       var scene = new THREE.Scene();
       /*****代码区域******/
 
-      var loader = new THREE.JSONLoader();
-      loader.load("./people.json", function (geometry, materials) {
-        console.log("geometry, materials: ", geometry, materials);
-        // 通过平均面法线来计算顶点法线，效果更光滑
-        geometry.computeVertexNormals();
-        // var material = new THREE.MeshFaceMaterial(materials);
-        var mesh = new THREE.Mesh(geometry, materials[0]);
-        // 材质对象开启渲染目标
-        mesh.material.morphTargets = true;
-        mesh.rotateX(-Math.PI / 2);
-        // mesh.position.y = -50;
-        scene.add(mesh);
-        console.log("mesh: ", mesh);
-        // 查看变形目标数据
-        console.log(geometry.morphTargets);
-        // mesh.morphTargetInfluences[0] = 1;
-        // mesh.morphTargetInfluences[4] = 1;
-        //实例化vue
-        vm = new Vue({
-          el: "#app",
-          data: {
-            time: 0,
-          },
-          watch: {
-            time: function (value) {
-              mesh.morphTargetInfluences[0] = value; // 变胖
-              // mesh.morphTargetInfluences[4] = value; // 变瘦
-            },
-          },
-        });
-      });
+      // 创建一个几何体 有8个顶点
+      var geometry = new THREE.BoxGeometry(50, 50, 50); // 立方体几何对象
+      console.log("geometry: ", geometry.vertices);
+
+      // 为geometry提供变形目标的数据
+      var box1 = new THREE.BoxGeometry(100, 5, 100); //为变形目标1提供数据
+      var box2 = new THREE.BoxGeometry(5, 200, 5); //为变形目标2提供数据
+
+      // 设置变形目标的数据
+      geometry.morphTargets[0] = { name: "target1", vertices: box1.vertices };
+      geometry.morphTargets[1] = { name: "target2", vertices: box2.vertices };
+      var material = new THREE.MeshBasicMaterial({
+        morphTargets: true, //允许变形
+        color: 0x0000ff,
+      }); //材质对象
+      var mesh = new THREE.Mesh(geometry, material); //网格模型对象
+      scene.add(mesh); //网格模型添加到场景中
+      //启用变形目标并设置变形目标影响权重，范围一般0~1
+      // 设置第一组顶点对几何体形状影响的变形系数
+      // mesh.morphTargetInfluences[0] = 0.5;
+      // 设置第二组顶点对几何体形状影响的变形系数
+      // mesh.morphTargetInfluences[1] = 1;
+
+      /**
+       * 设置关键帧数据
+       */
+      // 设置变形目标1对应权重随着时间的变化
+      var Track1 = new THREE.KeyframeTrack(
+        ".morphTargetInfluences[0]",
+        [0, 10, 20],
+        [0, 1, 0]
+      );
+      // 设置变形目标2对应权重随着时间的变化
+      var Track2 = new THREE.KeyframeTrack(
+        ".morphTargetInfluences[1]",
+        [20, 30, 40],
+        [0, 1, 0]
+      );
+      // 创建一个剪辑clip对象，命名"default"，持续时间40
+      var clip = new THREE.AnimationClip("default", 40, [Track1, Track2]);
+      // 创建一个时钟对象Clock
+      var clock = new THREE.Clock();
+      /**
+       * 播放编辑好的关键帧数据
+       */
+      var mixer = new THREE.AnimationMixer(mesh); //创建混合器
+      var AnimationAction = mixer.clipAction(clip); //返回动画操作对象
+      AnimationAction.timeScale = 4; //默认1，可以调节播放速度
+      // AnimationAction.loop = THREE.LoopOnce; //不循环播放
+      // AnimationAction.clampWhenFinished=true;//暂停在最后一帧播放的状态
+      AnimationAction.play(); //开始播放
+
       /*****代码区域******/
 
       var axisHelper = new THREE.AxisHelper(250);
@@ -105,6 +112,7 @@
         // 更新混合器相关的时间
         //clock.getDelta()方法获得两帧的时间间隔
         // 更新混合器相关的时间
+        mixer.update(clock.getDelta());
       }
       render();
       // onresize 事件会在窗口被调整大小时发生

@@ -12,20 +12,6 @@
     </style>
   </head>
   <body>
-    <div id="app">
-      <div class="block" style="display: inline; width: 500px">
-        <el-slider v-model="time" show-input :max="1" :step="0.01"></el-slider>
-      </div>
-    </div>
-    <!-- vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-    <!-- 引入样式 -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-    />
-    <!-- 引入组件库 -->
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
@@ -36,37 +22,23 @@
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
-
-      var loader = new THREE.JSONLoader();
-      loader.load("./people.json", function (geometry, materials) {
-        console.log("geometry, materials: ", geometry, materials);
-        // 通过平均面法线来计算顶点法线，效果更光滑
-        geometry.computeVertexNormals();
-        // var material = new THREE.MeshFaceMaterial(materials);
-        var mesh = new THREE.Mesh(geometry, materials[0]);
-        // 材质对象开启渲染目标
-        mesh.material.morphTargets = true;
-        mesh.rotateX(-Math.PI / 2);
-        // mesh.position.y = -50;
-        scene.add(mesh);
-        console.log("mesh: ", mesh);
-        // 查看变形目标数据
-        console.log(geometry.morphTargets);
-        // mesh.morphTargetInfluences[0] = 1;
-        // mesh.morphTargetInfluences[4] = 1;
-        //实例化vue
-        vm = new Vue({
-          el: "#app",
-          data: {
-            time: 0,
-          },
-          watch: {
-            time: function (value) {
-              mesh.morphTargetInfluences[0] = value; // 变胖
-              // mesh.morphTargetInfluences[4] = value; // 变瘦
-            },
-          },
-        });
+      var Bone1 = new THREE.Bone(); //关节1，用来作为根关节
+      var Bone2 = new THREE.Bone(); //关节2
+      var Bone3 = new THREE.Bone(); //关节3
+      // 设置关节父子关系   多个骨头关节构成一个树结构
+      Bone1.add(Bone2);
+      Bone2.add(Bone3);
+      // 设置关节之间的相对位置
+      //根关节Bone1默认位置是(0,0,0)
+      Bone2.position.y = 60; //Bone2相对父对象Bone1位置
+      Bone3.position.y = 40; //Bone3相对父对象Bone2位置
+      // 所有Bone对象插入到Skeleton中，全部设置为.bones属性的元素
+      var skeleton = new THREE.Skeleton([Bone1, Bone2, Bone3]); //创建骨骼系统
+      // 查看.bones属性中所有骨关节Bone
+      console.log(skeleton.bones);
+      // 返回所有关节的世界坐标
+      skeleton.bones.forEach((elem) => {
+        console.log(elem.getWorldPosition(new THREE.Vector3()));
       });
       /*****代码区域******/
 
@@ -101,8 +73,6 @@
       function render(e) {
         renderer.render(scene, camera); //执行渲染操作
         requestAnimationFrame(render); //请求再次执行渲染函数render
-        //clock.getDelta()方法获得两帧的时间间隔
-        // 更新混合器相关的时间
         //clock.getDelta()方法获得两帧的时间间隔
         // 更新混合器相关的时间
       }
