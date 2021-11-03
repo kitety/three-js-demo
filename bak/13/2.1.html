@@ -11,7 +11,6 @@
       }
     </style>
   </head>
-
   <body>
     <div id="app">
       <div class="block" style="display: inline; width: 500px">
@@ -38,20 +37,9 @@
         color: 0x0000ff,
       }); //材质对象
       var mesh = new THREE.Mesh(box, material); //网格模型对象
-      // scene.add(mesh); //网格模型添加到场景中
+      scene.add(mesh); //网格模型添加到场景中
 
-      var group = new THREE.Group();
-      let N = 128;
-      for (var i = 0; i < N / 2; i++) {
-        var box = new THREE.BoxGeometry(10, 10, 10);
-        var material = new THREE.MeshBasicMaterial({
-          color: 0x0000ff,
-        });
-        var mesh = new THREE.Mesh(box, material);
-        mesh.position.set(20 * i - (N / 2) * 10, 0, 0);
-        group.add(mesh);
-      }
-      scene.add(group);
+
 
       /*****代码区域******/
 
@@ -92,11 +80,9 @@
         // 更新混合器相关的时间
         if (analyser) {
           // getAverageFrequency()返回平均音频
-          var arr = analyser.getFrequencyData();
-          group.children.forEach((elem, index) => {
-            elem.scale.y = arr[index] / 10;
-            elem.material.color.r = arr[index] / 200;
-          });
+          var frequency = analyser.getAverageFrequency();
+          mesh.scale.y = (5 * frequency) / 256;
+          mesh.material.color.r = (3 * frequency) / 256;
         }
       }
 

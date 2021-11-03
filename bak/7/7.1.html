@@ -89,7 +89,7 @@
       ];
       var points = [];
       arr.forEach(function (item, index) {
-        points.push(new THREE.Vector2(item[0], item[1]));
+        points.push(new THREE.Vector3(item[0], item[1],1200));
       });
       // 样条曲线生成更多的点
       var SplineCurve = new THREE.SplineCurve(points);
