@@ -22,8 +22,6 @@
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
-    <!-- 引入threejs扩展库STLLoader.js加载器 -->
-    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/loaders/STLLoader.js"></script>
 
     <script>
       // 时间点设置函数
@@ -31,6 +29,24 @@
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
+
+      // 如果编写通用的材质加载器需要枚举所有的材质，这里没有列举完
+      var typeAPI = {
+        MeshLambertMaterial: THREE.MeshLambertMaterial,
+        MeshBasicMaterial: THREE.MeshBasicMaterial,
+        MeshPhongMaterial: THREE.MeshPhongMaterial,
+        PointsMaterial: THREE.PointsMaterial,
+      };
+      /**
+       *
+       */
+      var loader = new THREE.ObjectLoader();
+      loader.load("model.json", function (obj) {
+        console.log(obj);
+        console.log(obj.type);
+        obj.scale.set(100, 100, 100);
+        scene.add(obj);
+      });
 
       /*****代码区域******/
 

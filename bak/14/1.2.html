@@ -22,8 +22,6 @@
     <script src="../js/three.js"></script>
 
     <script src="../js/OrbitControls.js"></script>
-    <!-- 引入threejs扩展库STLLoader.js加载器 -->
-    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/loaders/STLLoader.js"></script>
 
     <script>
       // 时间点设置函数
@@ -31,6 +29,35 @@
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
+
+      // 如果编写通用的材质加载器需要枚举所有的材质，这里没有列举完
+      var typeAPI = {
+        MeshLambertMaterial: THREE.MeshLambertMaterial,
+        MeshBasicMaterial: THREE.MeshBasicMaterial,
+        MeshPhongMaterial: THREE.MeshPhongMaterial,
+        PointsMaterial: THREE.PointsMaterial,
+      };
+      // 创建文件加载器 该加载器是对异步加载的封装
+      var loader = new THREE.FileLoader();
+      loader.load("./material.json", function (elem) {
+        console.log("elem: ", elem);
+        var obj = JSON.parse(elem);
+        console.log("obj: ", obj);
+        var geometry = new THREE.BoxGeometry(100, 100, 100);
+        /**
+         * 解析材质数据
+         */
+        // 根据type的值判断调用threejs的哪一个API
+        var material = new typeAPI[obj.type](); // 从obj.color中提取颜色
+        console.log("material: ", material);
+        // 16711935对应颜色0xFF00FF  255对应颜色0x0000FF
+        material.color.r = ((obj.color >> 16) & 255) / 255; //获取颜色值R部分
+        material.color.g = ((obj.color >> 8) & 255) / 255; //获取颜色值G部分
+        material.color.b = (obj.color & 255) / 255; //获取颜色值B部分
+
+        var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+        scene.add(mesh); //网格模型添加到场景中
+      });
 
       /*****代码区域******/
 
