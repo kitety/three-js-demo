@@ -24,6 +24,13 @@
     <script src="../js/OrbitControls.js"></script>
     <!-- 引入threejs扩展库STLLoader.js加载器 -->
     <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/loaders/STLLoader.js"></script>
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/loaders/OBJLoader.js"></script>
+    <!-- 引入obj模型材质加载库MTLLoader.js -->
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/loaders/MTLLoader.js"></script>
+    <!-- 引入fbx模型加载库FBXLoader -->
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/loaders/FBXLoader.js"></script>
+    <!-- 辅助文件 -->
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/libs/inflate.min.js"></script>
 
     <script>
       // 时间点设置函数
@@ -31,7 +38,57 @@
       //  创建场景对象
       var scene = new THREE.Scene();
       /*****代码区域******/
+      // 创建一个时钟对象Clock
+      /**
+       * OBJ文件加载  只加载obj文件中的几何信息，不加载材质文件.mtl
+       */
+      var loader = new THREE.OBJLoader();
+      // 没有材质文件，系统自动设置Phong网格材质
+      var mesh = null; //声明一个网格模型变量
+      loader.load("./heart.obj", function (obj) {
+        // 控制台查看返回结构：包含一个网格模型Mesh的组Group
+        console.log(obj);
+        scene.add(obj);
+        mesh = obj.children[0]; //获得心脏网格模型
+        mesh.scale.set(10, 10, 10); //网格模型缩放
+        // 创建一个纹理加载器
+        var textureLoader = new THREE.TextureLoader();
+        //加载颜色纹理
+        var texture = textureLoader.load("./color.png");
+        mesh.material.map = texture;
+        var textureNormal = textureLoader.load("./normal.png");
+        mesh.material.normalMap = textureNormal;
+        // 设置深浅程度
+        mesh.material.normalScale.set(1.5, 1.5);
+        // 设置高光贴图，一个网格模型不同的区域反射光线的能力不同
+        var textureSpecular = textureLoader.load("./Specular.png");
+        mesh.material.specularMap = textureSpecular;
+        mesh.material.specular.set(0xffffff); // 高光反射颜色
+        mesh.material.shininess = 100; // 高光高亮程度，默认30
 
+        var textureCube = new THREE.CubeTextureLoader()
+          .setPath("../assets/env/")
+          .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
+        mesh.material.envMap = textureCube;
+        /**
+         * 光源设置
+         */
+        //点光源
+        var point = new THREE.PointLight(0xffffff, 0.3);
+        point.position.set(400, 200, 300); //点光源位置
+        scene.add(point); //点光源添加到场景中
+        // 环境光
+        var ambient = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambient);
+        // 方向光1
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(400, 200, 300);
+        scene.add(directionalLight);
+        // 方向光2
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(-400, -200, -300);
+        scene.add(directionalLight);
+      });
       /*****代码区域******/
 
       var axisHelper = new THREE.AxisHelper(250);
@@ -69,6 +126,11 @@
         // 更新混合器相关的时间
         //clock.getDelta()方法获得两帧的时间间隔
         // 更新混合器相关的时间
+        if (mixer !== null) {
+          //clock.getDelta()方法获得两帧的时间间隔
+          // 更新混合器相关的时间
+          mixer.update(clock.getDelta());
+        }
       }
 
       render();

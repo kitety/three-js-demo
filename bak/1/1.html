@@ -23,6 +23,7 @@
       // var geometry = new THREE.SphereGeometry(60, 40, 40);
       //创建一个立方体几何对象Geometry
       var geometry = new THREE.BoxGeometry(100, 100, 100);
+      console.log("geometry: ", geometry);
       // 材质对象
       var material = new THREE.MeshLambertMaterial({
         color: 0x00ff00,
@@ -61,8 +62,6 @@
       document.body.appendChild(renderer.domElement);
       // 渲染场景
       renderer.render(scene, camera);
-
-
     </script>
   </body>
 </html>
